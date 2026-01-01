@@ -2,10 +2,11 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/almartin82/arschooldata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/almartin82/arschooldata/actions/workflows/R-CMD-check.yaml)
+[![Python Tests](https://github.com/almartin82/arschooldata/actions/workflows/python-test.yaml/badge.svg)](https://github.com/almartin82/arschooldata/actions/workflows/python-test.yaml)
 [![pkgdown](https://github.com/almartin82/arschooldata/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/almartin82/arschooldata/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
-Fetch and analyze Arkansas public school enrollment data from the Arkansas Department of Education (ADE).
+Fetch and analyze Arkansas school enrollment data from the Arkansas Department of Education (ADE) in R or Python.
 
 **[Documentation](https://almartin82.github.io/arschooldata/)** | **[10 Key Insights](https://almartin82.github.io/arschooldata/articles/enrollment_hooks.html)** | **[Getting Started](https://almartin82.github.io/arschooldata/articles/quickstart.html)**
 
@@ -202,6 +203,8 @@ remotes::install_github("almartin82/arschooldata")
 
 ## Quick start
 
+### R
+
 ```r
 library(arschooldata)
 library(dplyr)
@@ -226,6 +229,32 @@ enr_2025 %>%
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian")) %>%
   select(subgroup, n_students, pct)
+```
+
+### Python
+
+```python
+import pyarschooldata as ar
+
+# Check available years
+years = ar.get_available_years()
+print(f"Data available from {years['min_year']} to {years['max_year']}")
+
+# Fetch one year
+df = ar.fetch_enr(2025)
+
+# Fetch multiple years
+df_multi = ar.fetch_enr_multi([2020, 2021, 2022, 2023, 2024, 2025])
+
+# State totals
+state_total = df[(df['is_state'] == True) &
+                 (df['subgroup'] == 'total_enrollment') &
+                 (df['grade_level'] == 'TOTAL')]
+
+# District breakdown
+districts = df[(df['is_district'] == True) &
+               (df['subgroup'] == 'total_enrollment') &
+               (df['grade_level'] == 'TOTAL')].sort_values('n_students', ascending=False)
 ```
 
 ## Data availability
