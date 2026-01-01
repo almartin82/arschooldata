@@ -4,10 +4,13 @@
 \alias{fetch_enr}
 \title{Fetch Arkansas enrollment data}
 \usage{
-fetch_enr(end_year, use_cache = TRUE)
+fetch_enr(end_year, tidy = TRUE, use_cache = TRUE)
 }
 \arguments{
 \item{end_year}{School year end (2023-24 = 2024). Valid range: 2006-2025.}
+
+\item{tidy}{If TRUE (default), returns data in long (tidy) format.
+Currently returns district-level data from Annual Statistical Reports.}
 
 \item{use_cache}{If TRUE (default), uses locally cached data when available.}
 }
