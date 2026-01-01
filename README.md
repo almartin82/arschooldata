@@ -7,9 +7,11 @@
 
 Fetch and analyze Arkansas public school enrollment data from the Arkansas Department of Education (ADE).
 
-**[Documentation](https://almartin82.github.io/arschooldata/)** | **[Getting Started](https://almartin82.github.io/arschooldata/articles/quickstart.html)**
+**[Documentation](https://almartin82.github.io/arschooldata/)** | **[10 Key Insights](https://almartin82.github.io/arschooldata/articles/enrollment_hooks.html)** | **[Getting Started](https://almartin82.github.io/arschooldata/articles/quickstart.html)**
 
 ## What can you find with arschooldata?
+
+> **See the full analysis with charts and data output:** [10 Insights from Arkansas Enrollment Data](https://almartin82.github.io/arschooldata/articles/enrollment_hooks.html)
 
 **21 years of enrollment data (2005-2025).** 470,000 students across 235+ districts in the Natural State. Here are ten stories hiding in the numbers:
 
