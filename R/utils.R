@@ -2,20 +2,30 @@
 # Utility Functions
 # ==============================================================================
 
-#' Pipe operator
-#'
-#' See \code{dplyr::\link[dplyr:reexports]{\%>\%}} for details.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
-#' @importFrom dplyr %>%
-#' @usage lhs \%>\% rhs
-#' @param lhs A value or the magrittr placeholder.
-#' @param rhs A function call using the magrittr semantics.
-#' @return The result of calling `rhs(lhs)`.
+#' @importFrom rlang .data
 NULL
+
+
+#' Get available years for Arkansas enrollment data
+#'
+#' Returns the range of school years for which enrollment data is available
+#' from the Arkansas Department of Education.
+#'
+#' @return A list with three elements:
+#'   \item{min_year}{The earliest available school year end (e.g., 2006 for 2005-06)}
+#'   \item{max_year}{The latest available school year end (e.g., 2025 for 2024-25)}
+#'   \item{description}{Human-readable description of data availability}
+#' @export
+#' @examples
+#' get_available_years()
+#' # Returns list with min_year, max_year, and description
+get_available_years <- function() {
+  list(
+    min_year = 2006,
+    max_year = 2025,
+    description = "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2024-25 (end_year 2025). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
+  )
+}
 
 
 #' Convert to numeric, handling suppression markers
