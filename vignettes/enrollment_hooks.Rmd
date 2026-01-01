@@ -27,7 +27,7 @@ library(ggplot2)
 theme_set(theme_minimal(base_size = 14))
 ```
 
-This vignette explores Arkansas's public school enrollment data, surfacing key trends and demographic patterns across 21 years of data (2005-2025).
+This vignette explores Arkansas's public school enrollment data, surfacing key trends and demographic patterns across 20 years of data (2005-2024).
 
 ---
 
@@ -36,7 +36,7 @@ This vignette explores Arkansas's public school enrollment data, surfacing key t
 Arkansas public school enrollment peaked around 2020 at nearly 480,000 students and has been declining since, following national trends.
 
 ```{r statewide-trend}
-enr <- fetch_enr_multi(2015:2025)
+enr <- fetch_enr_multi(2015:2024)
 
 state_totals <- enr |>
   filter(is_state, subgroup == "total_enrollment", grade_level == "TOTAL") |>
@@ -52,9 +52,9 @@ ggplot(state_totals, aes(x = end_year, y = n_students)) +
   geom_line(linewidth = 1.2, color = "#CC0000") +
   geom_point(size = 3, color = "#CC0000") +
   scale_y_continuous(labels = scales::comma) +
-  scale_x_continuous(breaks = 2015:2025) +
+  scale_x_continuous(breaks = 2015:2024) +
   labs(
-    title = "Arkansas Public School Enrollment (2015-2025)",
+    title = "Arkansas Public School Enrollment (2015-2024)",
     subtitle = "Peak enrollment followed by pandemic-era decline",
     x = "School Year (ending)",
     y = "Total Enrollment"
@@ -74,8 +74,8 @@ nwa_growth <- enr |>
   group_by(district_name) |>
   summarize(
     y2015 = n_students[end_year == 2015],
-    y2025 = n_students[end_year == 2025],
-    pct_change = round((y2025 / y2015 - 1) * 100, 1),
+    y2024 = n_students[end_year == 2024],
+    pct_change = round((y2024 / y2015 - 1) * 100, 1),
     .groups = "drop"
   ) |>
   arrange(desc(pct_change))
@@ -124,9 +124,9 @@ covid_grades
 Springdale Public Schools has surpassed Little Rock School District to become the state's largest, reflecting the growth of Northwest Arkansas.
 
 ```{r top-districts}
-enr_2025 <- fetch_enr(2025)
+enr_2024 <- fetch_enr(2024)
 
-top_10 <- enr_2025 |>
+top_10 <- enr_2024 |>
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") |>
   arrange(desc(n_students)) |>
   head(10) |>
@@ -142,7 +142,7 @@ top_10 |>
   geom_col(fill = "#CC0000") +
   scale_x_continuous(labels = scales::comma) +
   labs(
-    title = "Arkansas's 10 Largest School Districts (2025)",
+    title = "Arkansas's 10 Largest School Districts (2024)",
     x = "Total Enrollment",
     y = NULL
   )
@@ -155,7 +155,7 @@ top_10 |>
 Hispanic students have gone from under 10% to over 15% of Arkansas enrollment, concentrated in the poultry-processing regions of Northwest Arkansas.
 
 ```{r hispanic-trend}
-enr_full <- fetch_enr_multi(2005:2025)
+enr_full <- fetch_enr_multi(2005:2024)
 
 hispanic_trend <- enr_full |>
   filter(is_state, subgroup == "hispanic", grade_level == "TOTAL") |>
@@ -207,7 +207,7 @@ delta
 The state's demographics are shifting, but white students still comprise nearly two-thirds of enrollment, with Black students concentrated in Central and Delta regions.
 
 ```{r demographics}
-demographics <- enr_2025 |>
+demographics <- enr_2024 |>
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("white", "black", "hispanic", "asian", "multiracial")) |>
   mutate(pct = round(pct * 100, 1)) |>
@@ -226,7 +226,7 @@ demographics |>
   scale_x_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.15))) +
   scale_fill_brewer(palette = "Set2") +
   labs(
-    title = "Arkansas Student Demographics (2025)",
+    title = "Arkansas Student Demographics (2024)",
     x = "Number of Students",
     y = NULL
   )
@@ -239,7 +239,7 @@ demographics |>
 Arkansas charter schools have been growing, particularly in the Little Rock area where district turmoil has pushed families to alternatives.
 
 ```{r charters}
-charters <- enr_2025 |>
+charters <- enr_2024 |>
   filter(is_charter, subgroup == "total_enrollment", grade_level == "TOTAL") |>
   arrange(desc(n_students)) |>
   head(10) |>
@@ -255,7 +255,7 @@ charters
 More than 60% of Arkansas students qualify as economically disadvantaged, one of the highest rates in the nation.
 
 ```{r econ-disadv}
-econ <- enr_2025 |>
+econ <- enr_2024 |>
   filter(is_state, grade_level == "TOTAL",
          subgroup %in% c("econ_disadv", "total_enrollment")) |>
   select(subgroup, n_students, pct)
@@ -270,7 +270,7 @@ econ
 Small rural districts are being consolidated or absorbed, with dozens of districts having fewer than 500 students.
 
 ```{r small-districts}
-small <- enr_2025 |>
+small <- enr_2024 |>
   filter(is_district, subgroup == "total_enrollment", grade_level == "TOTAL") |>
   filter(n_students < 500) |>
   arrange(n_students) |>

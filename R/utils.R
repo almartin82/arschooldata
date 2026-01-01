@@ -22,8 +22,8 @@ NULL
 get_available_years <- function() {
   list(
     min_year = 2006,
-    max_year = 2025,
-    description = "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2024-25 (end_year 2025). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
+    max_year = 2024,
+    description = "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2023-24 (end_year 2024). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
   )
 }
 
