@@ -60,6 +60,7 @@ Data is sourced from the Arkansas Department of Education systems:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://almartin82.github.io/arschooldata}
   \item \url{https://github.com/almartin82/arschooldata}
   \item Report bugs at \url{https://github.com/almartin82/arschooldata/issues}
 }
