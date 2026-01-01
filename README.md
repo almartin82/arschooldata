@@ -33,6 +33,8 @@ enr %>%
   mutate(change = n_students - lag(n_students))
 ```
 
+![Arkansas enrollment trend](https://almartin82.github.io/arschooldata/articles/enrollment_hooks_files/figure-html/statewide-chart-1.png)
+
 ---
 
 ### 2. Northwest Arkansas is booming
@@ -53,6 +55,8 @@ enr %>%
   ) %>%
   arrange(desc(pct_change))
 ```
+
+![Northwest Arkansas growth](https://almartin82.github.io/arschooldata/articles/enrollment_hooks_files/figure-html/nwa-chart-1.png)
 
 ---
 
@@ -86,6 +90,8 @@ enr_2025 %>%
   select(district_name, n_students)
 ```
 
+![Top 10 districts](https://almartin82.github.io/arschooldata/articles/enrollment_hooks_files/figure-html/top-districts-chart-1.png)
+
 ---
 
 ### 5. Hispanic enrollment has tripled
@@ -100,6 +106,8 @@ enr %>%
   mutate(pct = round(pct * 100, 1)) %>%
   select(end_year, n_students, pct)
 ```
+
+![Hispanic enrollment trend](https://almartin82.github.io/arschooldata/articles/enrollment_hooks_files/figure-html/hispanic-chart-1.png)
 
 ---
 
@@ -138,6 +146,8 @@ enr_2025 %>%
   select(subgroup, n_students, pct) %>%
   arrange(desc(n_students))
 ```
+
+![Demographics breakdown](https://almartin82.github.io/arschooldata/articles/enrollment_hooks_files/figure-html/demographics-chart-1.png)
 
 ---
 
