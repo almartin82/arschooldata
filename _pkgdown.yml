@@ -9,13 +9,13 @@ template:
 
 home:
   links:
-  - text: "10 Insights from Arkansas Enrollment Data"
+  - text: "Arkansas School Enrollment Overview"
     href: articles/enrollment_hooks.html
   - text: "Part of the 50 State Schooldata Family"
     href: https://github.com/almartin82/njschooldata
 
 articles:
-- title: Key Insights
+- title: Getting Started
   navbar: ~
   contents:
   - enrollment_hooks

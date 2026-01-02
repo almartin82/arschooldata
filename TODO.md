@@ -1,39 +1,24 @@
-# TODO - arschooldata pkgdown Build Issues
+# TODO - arschooldata
 
-## Build Status: BLOCKED (Network Issues)
+## Data Source Enhancement (Priority: High)
 
-**Date:** 2026-01-01
+The current implementation fetches financial/budget data from the Annual Statistical Reports (ASR), not detailed enrollment demographics. See ERRATA.md for details.
 
-### Error Summary
+### Needed
 
-The pkgdown build failed due to network connectivity issues, not code or data problems.
+1. Implement ADE Data Center scraping for enrollment by race/ethnicity data
+2. Add `process_enrollment.R` to standardize raw data
+3. Add `tidy_enrollment.R` to transform to long format
+4. Add `id_enr_aggs()` function for aggregation level flags
 
-### Error Details
+### Current Data
 
-```
-Error in `httr2::req_perform(req)`:
-! Failed to perform HTTP request.
-Caused by error in `curl::curl_fetch_memory()`:
-! Timeout was reached [cloud.r-project.org]:
-Connection timed out after 10001 milliseconds
-```
+- Source: Arkansas DESE Annual Statistical Reports
+- Content: ADA (Average Daily Attendance), financial data
+- Coverage: 2006-2024
 
-The build process:
-1. Successfully read package configuration
-2. Passed all sitrep checks (URLs, favicons, open graph, articles, reference metadata)
-3. Started building home page
-4. Failed when trying to check CRAN link (network call to cloud.r-project.org)
+### Target Data
 
-### Resolution
-
-This is a transient network issue. Retry the build when network connectivity is restored:
-
-```r
-pkgdown::build_site()
-```
-
-### Notes
-
-- `git pull` also failed due to GitHub connectivity issues
-- The vignettes directory exists with `enrollment_hooks.Rmd`
-- No code changes needed - just need to retry when network is available
+- Source: ADE Data Center (https://adedata.arkansas.gov/statewide/)
+- Content: Enrollment by race/ethnicity, grade level, school
+- Coverage: 2005-2026
