@@ -1,6 +1,6 @@
 # Articles
 
-### Key Insights
+### Getting Started
 
-- [10 Insights from Arkansas School Enrollment
-  Data](https://almartin82.github.io/arschooldata/articles/enrollment_hooks.md):
+- [Arkansas School Enrollment: An
+  Overview](https://almartin82.github.io/arschooldata/articles/enrollment_hooks.md):

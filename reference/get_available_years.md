@@ -33,10 +33,10 @@ get_available_years()
 #> [1] 2006
 #> 
 #> $max_year
-#> [1] 2025
+#> [1] 2024
 #> 
 #> $description
-#> [1] "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2024-25 (end_year 2025). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
+#> [1] "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2023-24 (end_year 2024). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
 #> 
 # Returns list with min_year, max_year, and description
 ```
