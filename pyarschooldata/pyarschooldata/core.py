@@ -141,6 +141,9 @@ def get_available_years() -> dict:
             names = list(r_result.names)
             result = {}
             for i, name in enumerate(names):
-                result[name] = int(r_result[i])
+                val = r_result[i]
+                if hasattr(val, "__getitem__"):
+                    val = val[0]
+                result[name] = int(val)
             return result
         raise TypeError(f"Unexpected return type from get_available_years: {type(r_result)}")
