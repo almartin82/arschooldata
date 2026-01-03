@@ -220,9 +220,13 @@ read_asr_excel <- function(filepath, end_year) {
 
   # Read the sheet - skip initial rows that might be headers/titles
   # Try to detect the header row
+  # Use suppressMessages to silence "New names" messages from readxl
+  # when columns have empty names (these are auto-renamed to ...1, ...2, etc.)
   df <- tryCatch({
     # First, read without column names to inspect structure
-    raw <- readxl::read_excel(filepath, sheet = enr_sheet, col_names = FALSE, n_max = 20)
+    raw <- suppressMessages(
+      readxl::read_excel(filepath, sheet = enr_sheet, col_names = FALSE, n_max = 20)
+    )
 
     # Find the row with column headers (look for "District" or "LEA" text)
     header_row <- 1
@@ -235,18 +239,23 @@ read_asr_excel <- function(filepath, end_year) {
     }
 
     # Now read with proper header
-    readxl::read_excel(
-      filepath,
-      sheet = enr_sheet,
-      skip = header_row - 1,
-      col_types = "text"  # Read as text to avoid type issues
+    # Suppress "New names" messages for empty column headers
+    suppressMessages(
+      readxl::read_excel(
+        filepath,
+        sheet = enr_sheet,
+        skip = header_row - 1,
+        col_types = "text"  # Read as text to avoid type issues
+      )
     )
   }, error = function(e) {
     # Fallback: just read from the beginning
-    readxl::read_excel(
-      filepath,
-      sheet = enr_sheet,
-      col_types = "text"
+    suppressMessages(
+      readxl::read_excel(
+        filepath,
+        sheet = enr_sheet,
+        col_types = "text"
+      )
     )
   })
 

@@ -1,0 +1,290 @@
+---
+title: "Getting Started with arschooldata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with arschooldata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 8,
+  fig.height = 5
+)
+```
+
+## Introduction
+
+The `arschooldata` package provides access to Arkansas school data from the Arkansas Division of Elementary and Secondary Education (DESE). This vignette demonstrates how to use the package to fetch and analyze Arkansas school enrollment data.
+
+## Installation
+
+```{r install, eval=FALSE}
+# Install from GitHub
+devtools::install_github("almartin82/arschooldata")
+```
+
+## Loading the Package
+
+```{r load}
+library(arschooldata)
+library(dplyr)
+```
+
+## Checking Data Availability
+
+Before fetching data, check which years are available:
+
+```{r available-years}
+years <- get_available_years()
+print(years$description)
+cat("\nAvailable years:", paste(years$available_years, collapse = ", "))
+cat("\nGap years (not available):", paste(years$gap_years, collapse = ", "))
+```
+
+**Important:** Years 2007-2012 are not currently available due to missing data URLs.
+
+## Fetching Single Year Data
+
+Use `fetch_enr()` to download enrollment data for a single year:
+
+```{r fetch-single, eval=FALSE}
+# Fetch 2024 data (2023-24 school year)
+data_2024 <- fetch_enr(2024)
+
+# View dimensions
+dim(data_2024)
+
+# View column names
+names(data_2024)[1:15]
+```
+
+## Understanding the Data Structure
+
+The returned data contains district-level fiscal information from Arkansas Annual Statistical Reports. Key columns include:
+
+- **District identifiers**: District name and 7-digit LEA code
+- **ADA**: Average Daily Attendance (closest proxy to enrollment)
+- **ADM**: Average Daily Membership
+- **Fiscal data**: Revenue, expenditure, property tax, and mill rates
+
+**Note:** Column names vary by year due to different Excel file formats. Use these patterns to find the right columns:
+
+| Year Format | District Name Column | District ID Column | ADA Column |
+|-------------|---------------------|-------------------|------------|
+| 2006 | `district_name` | `district_lea` | `ada` |
+| 2013 | `actual_amount` | `2` | `2_ada` |
+| 2014-2024 | `1` | `2` | `2_ada` |
+
+Helper function for finding columns:
+
+```{r column-patterns, eval=FALSE}
+# District name column
+name_col <- if ("1" %in% names(data)) "1"
+            else if ("district_name" %in% names(data)) "district_name"
+            else "actual_amount"  # 2013 format
+
+# District ID column
+id_col <- if ("2" %in% names(data)) "2" else "district_lea"
+
+# ADA column
+ada_col <- if ("2_ada" %in% names(data)) "2_ada" else "ada"
+```
+
+## Fetching Multiple Years
+
+Use `fetch_enr_multi()` to download data for multiple years at once:
+
+```{r fetch-multi, eval=FALSE}
+# Fetch 5 years of data
+data_multi <- fetch_enr_multi(2020:2024)
+
+# Check years included
+table(data_multi$end_year)
+```
+
+## Data Quality Notes
+
+### Known Data Characteristics
+
+1. **Header rows in data**: Some years include 1-3 header rows that should be filtered out (identifiable by non-numeric district IDs)
+
+2. **Educational cooperatives**: Arkansas has Educational Service Cooperatives that appear in the data with zero ADA (this is correct - they don't directly serve students)
+
+3. **District consolidations**: Some districts show zero ADA in transition years due to consolidation or closure
+
+4. **Divide-by-zero values**: The `3_ada_pct_change_over_5_years` column contains `/0` for new districts or those without 5-year history
+
+### Filtering to Valid Data
+
+Always filter to valid data rows before analysis:
+
+```{r valid-data, eval=FALSE}
+# Get valid district rows (exclude headers and cooperatives if needed)
+id_col <- if ("2" %in% names(data)) "2" else "district_lea"
+
+valid_districts <- data |>
+  filter(
+    !is.na(.data[[id_col]]),
+    grepl("^[0-9]+$", .data[[id_col]])
+  )
+
+# Optionally exclude cooperatives (zero ADA entities)
+ada_col <- if ("2_ada" %in% names(data)) "2_ada" else "ada"
+active_districts <- valid_districts |>
+  filter(as.numeric(.data[[ada_col]]) > 0)
+```
+
+## Example Analysis: Top Districts by ADA
+
+```{r example-analysis, eval=FALSE}
+library(ggplot2)
+
+# Get 2024 data
+data_2024 <- fetch_enr(2024)
+
+# Filter to valid data rows and convert ADA to numeric
+clean_data <- data_2024 |>
+  filter(!is.na(`2`), grepl("^[0-9]", `2`)) |>
+  mutate(
+    district_name = `1`,
+    ada = as.numeric(`2_ada`)
+  )
+
+# Top 10 districts by ADA
+top_10 <- clean_data |>
+  arrange(desc(ada)) |>
+  head(10)
+
+print(top_10[, c("district_name", "ada")])
+
+# Expected output (2023-24 data):
+# Springdale: ~20,313
+# Bentonville: ~17,929
+# Little Rock: ~17,582
+# Rogers: ~14,333
+# Fort Smith: ~12,404
+```
+
+```{r plot-top10, eval=FALSE}
+# Plot top 10 districts
+ggplot(top_10, aes(x = reorder(district_name, ada), y = ada)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Arkansas School Districts by ADA (2023-24)",
+    x = NULL,
+    y = "Average Daily Attendance"
+  ) +
+  theme_minimal()
+```
+
+## Example Analysis: ADA Trends Over Time
+
+```{r trend-analysis, eval=FALSE}
+# Get multi-year data
+data_multi <- fetch_enr_multi(c(2006, 2013:2024))
+
+# Calculate state totals by year
+# Note: Must handle different column names across years
+calculate_state_ada <- function(data) {
+  id_col <- if ("2" %in% names(data)) "2" else "district_lea"
+  ada_col <- if ("2_ada" %in% names(data)) "2_ada" else "ada"
+
+  valid <- data[!is.na(data[[id_col]]) & grepl("^[0-9]+$", data[[id_col]]), ]
+  sum(as.numeric(valid[[ada_col]]), na.rm = TRUE)
+}
+
+state_totals <- data_multi |>
+  group_by(end_year) |>
+  summarize(
+    total_ada = sum(as.numeric(`2_ada`), na.rm = TRUE)
+  )
+
+# Plot state total ADA over time
+ggplot(state_totals, aes(x = end_year, y = total_ada)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "steelblue", size = 3) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = "Arkansas Total K-12 Average Daily Attendance",
+    x = "School Year (End Year)",
+    y = "Total ADA"
+  ) +
+  theme_minimal()
+```
+
+## Major Arkansas School Districts
+
+For reference, here are the largest Arkansas school districts and their approximate 2024 ADA:
+
+| Rank | District | ID | ADA (2024) |
+|------|----------|---------|------------|
+| 1 | Springdale | 7207000 | 20,313 |
+| 2 | Bentonville | 0401000 | 17,929 |
+| 3 | Little Rock | 6001000 | 17,582 |
+| 4 | Rogers | 0405000 | 14,333 |
+| 5 | Fort Smith | 6601000 | 12,404 |
+| 6 | Cabot | 4304000 | 9,485 |
+| 7 | Fayetteville | 7203000 | 9,377 |
+| 8 | Conway | 2301000 | 9,302 |
+| 9 | Bryant | 6303000 | 9,027 |
+| 10 | Jonesboro | 1608000 | 5,741 |
+
+## Caching
+
+By default, downloaded data is cached locally to avoid repeated downloads:
+
+```{r caching}
+# Check cache status
+cache_status()
+```
+
+Cache management:
+
+```{r cache-management, eval=FALSE}
+# Clear all cached data
+clear_cache()
+
+# Clear only 2024 data
+clear_cache(2024)
+
+# Force fresh download
+data_fresh <- fetch_enr(2024, use_cache = FALSE)
+```
+
+## Data Source Details
+
+Arkansas school data comes from two sources:
+
+1. **Annual Statistical Reports (ASR)**: District-level fiscal and enrollment summary data
+   - URL: https://dese.ade.arkansas.gov/offices/data-management/annual-statistical-report
+
+2. **ADE Data Center**: Detailed enrollment demographics (not yet implemented in this package)
+   - URL: https://adedata.arkansas.gov/statewide/
+
+## Limitations
+
+Currently, this package provides:
+
+- Average Daily Attendance (ADA) - a proxy for enrollment
+- District-level fiscal data (revenue, expenditure, mills)
+- Historical data from 2006 and 2013-2024
+
+It does NOT yet provide:
+
+- Enrollment demographics by race/ethnicity
+- School-level data
+- Grade-level breakdowns
+- Years 2007-2012 (missing source URLs)
+
+For detailed demographics, visit the ADE Data Center directly at https://adedata.arkansas.gov/statewide/
+
+## Getting Help
+
+For issues or feature requests, visit: https://github.com/almartin82/arschooldata/issues

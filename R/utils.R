@@ -11,19 +11,35 @@ NULL
 #' Returns the range of school years for which enrollment data is available
 #' from the Arkansas Department of Education.
 #'
-#' @return A list with three elements:
+#' @return A list with the following elements:
 #'   \item{min_year}{The earliest available school year end (e.g., 2006 for 2005-06)}
-#'   \item{max_year}{The latest available school year end (e.g., 2025 for 2024-25)}
+#'   \item{max_year}{The latest available school year end (e.g., 2024 for 2023-24)}
+#'   \item{available_years}{Integer vector of all years with data URLs}
+#'   \item{gap_years}{Integer vector of years without data URLs (2007-2012)}
 #'   \item{description}{Human-readable description of data availability}
 #' @export
 #' @examples
 #' get_available_years()
-#' # Returns list with min_year, max_year, and description
+#' # Returns list with available years and description
 get_available_years <- function() {
+  # Years with known ASR URLs
+  available <- c(2006, 2013:2024)
+
+  # Years without URLs (gap in data)
+  gap <- 2007:2012
+
   list(
     min_year = 2006,
     max_year = 2024,
-    description = "Arkansas enrollment data is available from 2005-06 (end_year 2006) through 2023-24 (end_year 2024). Data comes from the Annual Statistical Reports published by the Arkansas Division of Elementary and Secondary Education."
+    available_years = available,
+    gap_years = gap,
+    description = paste0(
+      "Arkansas enrollment data is available from 2005-06 (end_year 2006) and 2012-13 (end_year 2013) ",
+      "through 2023-24 (end_year 2024). NOTE: Years 2007-2012 are NOT currently available due to missing ",
+      "ASR URLs. Data comes from the Annual Statistical Reports published by the Arkansas Division of ",
+      "Elementary and Secondary Education (DESE). The data contains fiscal/budget information including ",
+      "Average Daily Attendance (ADA), but NOT enrollment demographics by race/ethnicity."
+    )
   )
 }
 
