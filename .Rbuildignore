@@ -1,3 +1,10 @@
 ^doc$
 ^Meta$
 ^py.*schooldata$
+^CLAUDE\.md$
+^ERRATA\.md$
+^TODO\.md$
+^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^\.github$
