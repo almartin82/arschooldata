@@ -2,8 +2,8 @@
 
 Downloads and processes school data from the Arkansas Department of
 Education (ADE). Provides functions for fetching enrollment data from
-the ADE Data Center and Annual Statistical Reports (ASR), then
-transforming it into tidy format for analysis.
+Annual Statistical Reports (ASR), which contain Average Daily Attendance
+(ADA) and fiscal data.
 
 ## Main functions
 
@@ -15,17 +15,9 @@ transforming it into tidy format for analysis.
 
   Fetch enrollment data for multiple years
 
-- `tidy_enr`:
+- [`get_available_years`](https://almartin82.github.io/arschooldata/reference/get_available_years.md):
 
-  Transform wide data to tidy (long) format
-
-- `id_enr_aggs`:
-
-  Add aggregation level flags
-
-- `enr_grade_aggs`:
-
-  Create grade-level aggregations
+  Check which years have available data
 
 ## Cache functions
 
@@ -49,18 +41,23 @@ Arkansas uses a hierarchical ID system:
 
 Data is sourced from the Arkansas Department of Education systems:
 
-- ADE Data Center: <https://adedata.arkansas.gov/statewide/>
-
 - Annual Statistical Reports:
-  <https://dese.ade.arkansas.gov/Offices/fiscal-and-administrative-services/publication-and-reports/annual-statistical-reports>
+  <https://dese.ade.arkansas.gov/offices/data-management/annual-statistical-report>
+
+- ADE Data Center (demographics, not yet implemented):
+  <https://adedata.arkansas.gov/statewide/>
 
 ## Data Availability
 
-- Enrollment by Grade/Race: 2005-2025 via ADE Data Center
+- Year 2006: Available
 
-- Annual Statistical Reports (detailed demographics): 2006-2024
+- Years 2007-2012: NOT available (missing ASR URLs)
 
-- Pre-2005 data may have different formats
+- Years 2013-2024: Available
+
+Use
+[`get_available_years`](https://almartin82.github.io/arschooldata/reference/get_available_years.md)
+to check current availability.
 
 ## See also
 
