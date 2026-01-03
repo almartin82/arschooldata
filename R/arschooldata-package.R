@@ -1,17 +1,14 @@
 #' arschooldata: Fetch and Process Arkansas School Data
 #'
 #' Downloads and processes school data from the Arkansas Department of Education
-#' (ADE). Provides functions for fetching enrollment data from the ADE Data Center
-#' and Annual Statistical Reports (ASR), then transforming it into tidy format
-#' for analysis.
+#' (ADE). Provides functions for fetching enrollment data from Annual Statistical
+#' Reports (ASR), which contain Average Daily Attendance (ADA) and fiscal data.
 #'
 #' @section Main functions:
 #' \describe{
 #'   \item{\code{\link{fetch_enr}}}{Fetch enrollment data for a school year}
 #'   \item{\code{\link{fetch_enr_multi}}}{Fetch enrollment data for multiple years}
-#'   \item{\code{\link{tidy_enr}}}{Transform wide data to tidy (long) format}
-#'   \item{\code{\link{id_enr_aggs}}}{Add aggregation level flags}
-#'   \item{\code{\link{enr_grade_aggs}}}{Create grade-level aggregations}
+#'   \item{\code{\link{get_available_years}}}{Check which years have available data}
 #' }
 #'
 #' @section Cache functions:
@@ -30,16 +27,17 @@
 #' @section Data Sources:
 #' Data is sourced from the Arkansas Department of Education systems:
 #' \itemize{
-#'   \item ADE Data Center: \url{https://adedata.arkansas.gov/statewide/}
-#'   \item Annual Statistical Reports: \url{https://dese.ade.arkansas.gov/Offices/fiscal-and-administrative-services/publication-and-reports/annual-statistical-reports}
+#'   \item Annual Statistical Reports: \url{https://dese.ade.arkansas.gov/offices/data-management/annual-statistical-report}
+#'   \item ADE Data Center (demographics, not yet implemented): \url{https://adedata.arkansas.gov/statewide/}
 #' }
 #'
 #' @section Data Availability:
 #' \itemize{
-#'   \item Enrollment by Grade/Race: 2005-2025 via ADE Data Center
-#'   \item Annual Statistical Reports (detailed demographics): 2006-2024
-#'   \item Pre-2005 data may have different formats
+#'   \item Year 2006: Available
+#'   \item Years 2007-2012: NOT available (missing ASR URLs)
+#'   \item Years 2013-2024: Available
 #' }
+#' Use \code{\link{get_available_years}} to check current availability.
 #'
 #' @docType package
 #' @name arschooldata-package

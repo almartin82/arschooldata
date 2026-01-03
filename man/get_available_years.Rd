@@ -7,9 +7,11 @@
 get_available_years()
 }
 \value{
-A list with three elements:
+A list with the following elements:
 \item{min_year}{The earliest available school year end (e.g., 2006 for 2005-06)}
-\item{max_year}{The latest available school year end (e.g., 2025 for 2024-25)}
+\item{max_year}{The latest available school year end (e.g., 2024 for 2023-24)}
+\item{available_years}{Integer vector of all years with data URLs}
+\item{gap_years}{Integer vector of years without data URLs (2007-2012)}
 \item{description}{Human-readable description of data availability}
 }
 \description{
@@ -18,5 +20,5 @@ from the Arkansas Department of Education.
 }
 \examples{
 get_available_years()
-# Returns list with min_year, max_year, and description
+# Returns list with available years and description
 }

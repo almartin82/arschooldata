@@ -4,7 +4,10 @@ Version: 0.1.0
 Authors@R:
     person("Al", "Martin", , "almartin@example.com", role = c("aut", "cre"))
 Description: A simple, consistent interface for accessing Arkansas
-    school data in Python and R.
+    school data from the Arkansas Division of Elementary and Secondary
+    Education (DESE). Provides functions for fetching enrollment data from
+    Annual Statistical Reports, which contain Average Daily Attendance (ADA)
+    and fiscal information for Arkansas school districts.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,21 +17,18 @@ Depends:
 Imports:
     dplyr,
     readxl,
-    readr,
     purrr,
-    stringr,
-    tidyr,
     rlang,
     httr,
-    rappdirs,
-    rvest
+    rappdirs
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
     ggplot2,
     scales,
-    forcats
+    forcats,
+    curl
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://almartin82.github.io/arschooldata, https://github.com/almartin82/arschooldata
